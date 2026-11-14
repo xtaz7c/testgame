@@ -534,7 +534,7 @@ export class MissionScene extends Phaser.Scene {
     this.hudPanels.lineStyle(1, HUD_COLORS.metal, 0.62);
     this.hudPanels.fillRoundedRect(20, 20, 124, 56, 8);
     this.hudPanels.strokeRoundedRect(20, 20, 124, 56, 8);
-    this.hudPanels.fillStyle(HUD_COLORS.red, 0.95);
+    this.hudPanels.fillStyle(0x000000, 1);
     this.hudPanels.fillRoundedRect(mapX - 2, mapY - 2, 204, 204, 7);
     this.hudPanels.fillStyle(0x000000, 1);
     this.hudPanels.fillRoundedRect(mapX, mapY, 200, 200, 5);
