@@ -51,15 +51,15 @@ export class Simulation {
   private paused = false;
   private accumulator = 0;
   private readonly officers: PoliceOfficer[] = [
-    new PoliceOfficer({ id: 1, x: 29 * WORLD_TILE_SIZE + 16, y: 33 * WORLD_TILE_SIZE + 16 }),
-    new PoliceOfficer({ id: 2, x: 32 * WORLD_TILE_SIZE + 16, y: 33 * WORLD_TILE_SIZE + 16 }),
-    new PoliceOfficer({ id: 3, x: 35 * WORLD_TILE_SIZE + 16, y: 33 * WORLD_TILE_SIZE + 16 }),
+    new PoliceOfficer({ id: 1, x: 57 * WORLD_TILE_SIZE + 16, y: 56 * WORLD_TILE_SIZE + 16 }),
+    new PoliceOfficer({ id: 2, x: 60 * WORLD_TILE_SIZE + 16, y: 56 * WORLD_TILE_SIZE + 16 }),
+    new PoliceOfficer({ id: 3, x: 63 * WORLD_TILE_SIZE + 16, y: 56 * WORLD_TILE_SIZE + 16 }),
   ];
   private readonly infected: Infected[] = [];
   private additionalHumanTargets: HumanTarget[] = [];
   private readonly civilians: Civilian[] = [
-    new Civilian({ id: 1, x: 800, y: 480 }),
-    new Civilian({ id: 2, x: 1200, y: 480 }),
+    new Civilian({ id: 1, x: 1856, y: 1456 }),
+    new Civilian({ id: 2, x: 2016, y: 1456 }),
   ];
   private readonly combat: CombatSystem;
   private combatEvents: CombatEvent[] = [];
