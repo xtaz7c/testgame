@@ -8,8 +8,8 @@
 
 export const WORLD_CONFIG = Object.freeze({
   /** Largura e altura do mapa em células. */
-  columns: 64,
-  rows: 40,
+  columns: 120,
+  rows: 90,
   /** Tamanho de cada célula em pixels lógicos. */
   tileSize: 32,
   /** Resolução lógica configurada no Phaser. */
