@@ -518,8 +518,10 @@ export class MissionScene extends Phaser.Scene {
     this.hudBounds.mission.y = 88;
     this.hudBounds.minimap.x = mapX;
     this.hudBounds.minimap.y = mapY;
-    this.hudBounds.team.x = mapX + 30;
-    this.hudBounds.team.y = mapY + 246;
+    this.hudBounds.team.x = mapX;
+    this.hudBounds.team.y = mapY + 202;
+    this.hudBounds.team.width = 200;
+    this.hudBounds.team.height = 160;
     this.hudBounds.build.x = buildX;
     this.hudBounds.build.y = buildY;
 
