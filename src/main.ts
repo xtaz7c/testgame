@@ -94,6 +94,7 @@ window.addEventListener('outbreakzones:return-home', () => {
   homeScreen.hidden = false;
   startButton.disabled = false;
   startButton.removeAttribute('aria-busy');
+  refreshCampaignAvailability();
   startButton.innerHTML = `
     <span>INICIAR OPERAÇÃO</span>
     <span class="primary-button__arrow" aria-hidden="true">↗</span>

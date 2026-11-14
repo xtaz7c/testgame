@@ -132,7 +132,7 @@ export class MissionScene extends Phaser.Scene {
     settings: { x: 20, y: 20, width: 124, height: 56 },
     mission: { x: 20, y: 88, width: 276, height: 142 },
     minimap: { x: 0, y: 20, width: 320, height: 354 },
-    team: { x: 0, y: 384, width: 320, height: 154 },
+    team: { x: 0, y: 0, width: 320, height: 206 },
     build: { x: 20, y: 0, width: 440, height: 64 },
   };
 
@@ -530,6 +530,8 @@ export class MissionScene extends Phaser.Scene {
     this.hudPanels.strokeRoundedRect(viewX + 20, viewY + 20, 124, 56, 8);
     this.hudPanels.fillRoundedRect(viewX + 20, viewY + 88, 276, 142, 8);
     this.hudPanels.strokeRoundedRect(viewX + 20, viewY + 88, 276, 142, 8);
+    this.hudPanels.fillStyle(HUD_COLORS.red, 0.95);
+    this.hudPanels.fillRect(viewX + 20, viewY + 88, 3, 142);
     this.hudPanels.fillRoundedRect(mapX, mapY, 320, 354, 12);
     this.hudPanels.strokeRoundedRect(mapX, mapY, 320, 354, 12);
     this.hudPanels.fillStyle(HUD_COLORS.officer, 1);
