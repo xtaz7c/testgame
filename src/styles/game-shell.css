@@ -1,0 +1,1 @@
+#game-container{position:fixed;inset:0;overflow:hidden;background:var(--ink-deep)}#game-container canvas{display:block;width:100%;height:100%;image-rendering:pixelated}

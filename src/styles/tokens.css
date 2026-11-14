@@ -1,0 +1,8 @@
+:root {
+  color-scheme: dark; font-family: 'Barlow', 'Segoe UI', Arial, sans-serif;
+  font-synthesis: none; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
+  --ink:#111415; --ink-deep:#0b1016; --panel:#151c25; --panel-raised:#1c2632;
+  --line:#55436f; --line-soft:rgba(155,121,208,.28); --violet:#9b79d0; --violet-bright:#c0a1ff;
+  --paper:#e8e3d8; --metal:#b9b9b0; --muted:#858a87; --moss:#46583a; --moss-light:#82905b;
+  --amber:#d7a34a; --blue:#3f83d5; --red:#c33a36; color:var(--paper); background:var(--ink-deep);
+}

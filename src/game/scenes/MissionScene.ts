@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { AudioManager } from '../audio/AudioManager';
+import { HUD_COLORS } from '../presentation/hudTheme';
 import { DEFAULT_HUD_SCALE, normalizeHudScale } from '../HudScale';
 import { canStartCampaign, getMissionDefinition, getMissionResultMessage, type MissionId } from '../MissionProgression';
 import { Simulation } from '../../simulation/Simulation';
@@ -52,18 +53,6 @@ interface MinimapVisibility {
 
 const MINIMAP_CONFIG_KEY = 'outbreakzones:minimap-visibility';
 const HUD_SCALE_STORAGE_KEY = 'outbreakzones:hud-scale';
-const HUD_COLORS = {
-  ink: 0x111415,
-  panel: 0x101516,
-  metal: 0xb9b9b0,
-  muted: 0xc0c5bd,
-  paper: 0xe8e3d8,
-  red: 0xc33a36,
-  officer: 0x5c9be6,
-  civilian: 0xe7c66a,
-  infected: 0xc33a36,
-} as const;
-
 export class MissionScene extends Phaser.Scene {
   private simulation!: Simulation;
   private audio!: AudioManager;
@@ -504,6 +493,7 @@ export class MissionScene extends Phaser.Scene {
     const viewY = 0;
     const mapX = viewX + width / this.hudScale - 340;
     const mapY = viewY + 20;
+    const buildPanelX = (width / this.hudScale - 440) / 2;
 
     this.hudBounds.settings.x = viewX + 20;
     this.hudBounds.settings.y = viewY + 20;
@@ -513,7 +503,7 @@ export class MissionScene extends Phaser.Scene {
     this.hudBounds.minimap.y = mapY;
     this.hudBounds.team.x = mapX;
     this.hudBounds.team.y = mapY + 364;
-    this.hudBounds.build.x = viewX + 20;
+    this.hudBounds.build.x = buildPanelX;
     this.hudBounds.build.y = height / this.hudScale - 84;
 
     // Tactical HUD elements are viewport-space UI and must ignore world camera movement.
@@ -525,7 +515,7 @@ export class MissionScene extends Phaser.Scene {
     this.accessGraphics = this.add.graphics().setDepth(80);
 
     this.hudPanels.fillStyle(HUD_COLORS.panel, 0.99);
-    this.hudPanels.lineStyle(1, HUD_COLORS.metal, 0.62);
+    this.hudPanels.lineStyle(1, HUD_COLORS.violet, 0.72);
     this.hudPanels.fillRoundedRect(viewX + 20, viewY + 20, 124, 56, 8);
     this.hudPanels.strokeRoundedRect(viewX + 20, viewY + 20, 124, 56, 8);
     this.hudPanels.fillRoundedRect(viewX + 20, viewY + 88, 276, 142, 8);
@@ -541,8 +531,8 @@ export class MissionScene extends Phaser.Scene {
     this.hudPanels.fillStyle(HUD_COLORS.panel, 0.99);
     this.hudPanels.fillRoundedRect(mapX, mapY + 364, 320, 154, 8);
     this.hudPanels.strokeRoundedRect(mapX, mapY + 364, 320, 154, 8);
-    this.hudPanels.fillRoundedRect(viewX + 20, height / this.hudScale - 84, 440, 64, 8);
-    this.hudPanels.strokeRoundedRect(viewX + 20, height / this.hudScale - 84, 440, 64, 8);
+    this.hudPanels.fillRoundedRect(buildPanelX, height / this.hudScale - 84, 440, 64, 8);
+    this.hudPanels.strokeRoundedRect(buildPanelX, height / this.hudScale - 84, 440, 64, 8);
 
     this.settingsButton = this.add.text(viewX + 48, viewY + 48, '⚙', {
       fontFamily: 'Arial, sans-serif',
@@ -603,15 +593,15 @@ export class MissionScene extends Phaser.Scene {
       wordWrap: { width: 296 },
     }).setScrollFactor(0).setDepth(1505);
 
-    const buildTitle = this.add.text(viewX + 32, height / this.hudScale - 78, 'CONSTRUÇÕES  /  CLIQUE E POSICIONE NO MAPA', {
+    const buildTitle = this.add.text(buildPanelX + 12, height / this.hudScale - 78, 'CONSTRUÇÕES  /  CLIQUE E POSICIONE NO MAPA', {
       fontFamily: 'Arial, sans-serif', fontSize: '9px', color: '#c0c5bd', letterSpacing: 0.8,
     }).setScrollFactor(0).setDepth(1505);
     hudLabels.push(buildTitle);
     this.buildButtons.splice(0, this.buildButtons.length,
-      this.createBuildButton(viewX + 76, height / this.hudScale - 47, 'ABRIGO 30/8', 'shelter-tent'),
-      this.createBuildButton(viewX + 184, height / this.hudScale - 47, 'SUPR. 20/5', 'resource-tent'),
-      this.createBuildButton(viewX + 292, height / this.hudScale - 47, 'SNIPER 45/20', 'sniper-post'),
-      this.createBuildButton(viewX + 400, height / this.hudScale - 47, 'BARREIRA 12/3', 'barricade'),
+      this.createBuildButton(buildPanelX + 56, height / this.hudScale - 47, 'ABRIGO 30/8', 'shelter-tent'),
+      this.createBuildButton(buildPanelX + 164, height / this.hudScale - 47, 'SUPR. 20/5', 'resource-tent'),
+      this.createBuildButton(buildPanelX + 272, height / this.hudScale - 47, 'SNIPER 45/20', 'sniper-post'),
+      this.createBuildButton(buildPanelX + 380, height / this.hudScale - 47, 'BARREIRA 12/3', 'barricade'),
     );
 
     const teamHitArea = this.add.rectangle(mapX + 160, mapY + 441, 296, 142, 0xffffff, 0.001)
@@ -632,7 +622,7 @@ export class MissionScene extends Phaser.Scene {
     this.pauseOverlay = this.add.rectangle(width / 2, height / 2, width, height, 0x080a0a, 0.72)
       .setScrollFactor(0).setDepth(1900).setVisible(false);
     this.pausePanel = this.add.rectangle(width / 2, height / 2, 410, 440, HUD_COLORS.panel, 1)
-      .setScrollFactor(0).setDepth(1901).setStrokeStyle(1, HUD_COLORS.red, 0.8).setVisible(false);
+      .setScrollFactor(0).setDepth(1901).setStrokeStyle(1, HUD_COLORS.violet, 0.8).setVisible(false);
     this.pauseTitle = this.add.text(width / 2, height / 2 - 188, 'OPERAÇÃO PAUSADA', {
       fontFamily: 'Barlow Condensed, Impact, sans-serif',
       fontSize: '32px',
@@ -666,7 +656,7 @@ export class MissionScene extends Phaser.Scene {
     });
 
     this.resultPanel = this.add.rectangle(width / 2, height / 2, 560, 270, 0x111415, 0.97)
-      .setScrollFactor(0).setDepth(2000).setStrokeStyle(2, HUD_COLORS.red).setVisible(false);
+      .setScrollFactor(0).setDepth(2000).setStrokeStyle(2, HUD_COLORS.violet).setVisible(false);
     this.resultText = this.add.text(width / 2, height / 2 - 48, '', {
       fontFamily: 'Barlow Condensed, Impact, sans-serif',
       fontSize: '26px',
@@ -707,7 +697,7 @@ export class MissionScene extends Phaser.Scene {
     const kinds: DeployableKind[] = ['shelter-tent', 'resource-tent', 'sniper-post', 'barricade'];
     this.buildButtons.forEach((button, index) => {
       const kind = kinds[index];
-      button.setBackgroundColor(this.placementMode === kind ? '#a72b2e' : '#252c2d');
+      button.setBackgroundColor(this.placementMode === kind ? '#7555a6' : '#252c2d');
     });
   }
 
