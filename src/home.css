@@ -276,3 +276,22 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .loading-dots i { animation: none; opacity: .9; }
 }
+
+/* Build 2.0 — seleção de modos na identidade vermelho/carvão da marca. */
+.mode-dialog { width:min(760px,calc(100vw - 32px)); max-height:min(88vh,760px); padding:clamp(20px,4vw,34px); border:1px solid rgba(195,58,54,.62); background:linear-gradient(145deg,#1b2021,#111516 78%); color:var(--paper); box-shadow:0 28px 110px rgba(0,0,0,.78); }
+.mode-dialog::backdrop { background:rgba(5,7,7,.82); backdrop-filter:blur(6px); }
+.mode-dialog__header { display:flex; justify-content:space-between; gap:20px; padding-bottom:22px; border-bottom:1px solid rgba(190,190,180,.16); }
+.mode-dialog__header .eyebrow { margin-bottom:10px; }
+.mode-dialog__header h2 { margin:0; font:900 clamp(28px,5vw,42px)/.95 'Barlow Condensed',Impact,sans-serif; letter-spacing:.4px; }
+.mode-dialog__header p:last-child { margin:10px 0 0; color:#929892; font-size:12px; }
+.mode-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; padding-top:20px; }
+.mode-card { display:flex; min-height:218px; flex-direction:column; align-items:flex-start; gap:12px; padding:18px 15px; border:1px solid #414847; border-top:2px solid var(--red-bright); background:linear-gradient(160deg,#242a2b,#171c1d); color:var(--paper); text-align:left; cursor:pointer; transition:border-color .2s ease,transform .2s ease,background .2s ease; }
+.mode-card:hover:not(:disabled) { transform:translateY(-3px); border-color:var(--red-bright); background:linear-gradient(160deg,#2b2929,#191c1d); }
+.mode-card:focus-visible { outline:2px solid var(--red-bright); outline-offset:3px; }
+.mode-card:disabled,.mode-card--disabled { cursor:not-allowed; opacity:.48; border-top-color:#68706c; }
+.mode-card__index { color:#a7aaa2; font-size:8px; font-weight:800; letter-spacing:1.4px; }
+.mode-card strong { font:900 30px/.95 'Barlow Condensed',Impact,sans-serif; letter-spacing:.5px; }
+.mode-card > span:not(.mode-card__index) { flex:1; color:#a2a79f; font-size:11px; line-height:1.6; }
+.mode-card > b { color:var(--red-bright); font-size:8px; letter-spacing:1.1px; }
+.mode-card:disabled > b,.mode-card--disabled > b { color:#858a87; }
+@media(max-width:640px) { .mode-list { grid-template-columns:1fr; } .mode-card { min-height:0; } .mode-card > span:not(.mode-card__index) { flex:initial; } }
