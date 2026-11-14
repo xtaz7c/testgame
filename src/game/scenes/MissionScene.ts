@@ -1074,8 +1074,8 @@ export class MissionScene extends Phaser.Scene {
         const tiles = layer.data[row] ?? [];
         for (let column = 0; column < tiles.length; column += 1) {
           const tile = tiles[column];
-          if (!tile || tile.index <= 0) continue;
-          const color = minimapTileColors[tile.index - 1] ?? 0x555b58;
+          if (!tile || tile.index < 0) continue;
+          const color = minimapTileColors[tile.index] ?? 0x555b58;
           this.minimapGraphics.fillStyle(color, 1);
           this.minimapGraphics.fillRect(
             renderedMapX + column * mapScale,
