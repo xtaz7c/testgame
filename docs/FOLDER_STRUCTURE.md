@@ -1,65 +1,61 @@
 # Estrutura de pastas
 
-A organização separa apresentação, domínio/simulação, mundo, recursos estáticos e documentação. Diretórios são criados conforme há módulos reais para ocupá-los; não manter pastas vazias apenas para antecipar arquitetura.
+A organização separa interface web, apresentação Phaser, simulação e recursos estáticos. Cada pasta possui uma responsabilidade única.
 
 ## Recursos estáticos
 
 ```text
 public/
+├── assets/
+│   ├── sprites/                 # Spritesheets de personagens e objetos
+│   └── tiles/
+│       └── terrain/             # Tilesets de terreno e ambiente
 ├── audio/
-│   ├── music/                 # Trilhas e ambientes em loop
+│   ├── music/
 │   └── effects/
-│       ├── weapons/           # Disparos e efeitos de armas
-│       └── infected/          # Vocalizações dos infectados
-├── images/                    # Ícones e imagens
-├── maps/                      # Mapas exportados do Tiled
-└── tiles/                     # Tilesets
+│       ├── weapons/
+│       └── infected/
+├── images/                      # Ícones e imagens de marca
+└── maps/                        # Mapas exportados do Tiled
 ```
-
-Áudios usam nomes descritivos, sem timestamps ou nomes temporários; variantes usam sufixos numéricos de dois dígitos.
 
 ## Código
 
 ```text
 src/
-├── main.ts
-├── game/                      # Integração Phaser e apresentação
+├── main.ts                      # Bootstrap e ciclo menu/jogo
+├── styles/
+│   ├── tokens.css               # Paleta e tokens globais
+│   ├── base.css                 # Regras fundamentais
+│   ├── menu.css                 # Tela inicial e responsividade
+│   ├── dialogs.css              # Diálogos e controles
+│   ├── game-shell.css           # Canvas e contêiner do jogo
+│   ├── loading.css              # Indicador de inicialização
+│   └── index.css                # Composição dos estilos
+├── game/
 │   ├── audio/
+│   ├── presentation/
+│   │   └── hudTheme.ts          # Cores semânticas da HUD Phaser
 │   ├── scenes/
-│   ├── config.ts
-│   └── ...                    # UI, input e renderers quando extraídos
-└── simulation/                # Regras de domínio sem Phaser/DOM
-    ├── entities/              # Civilian, Infected, PoliceOfficer
+│   └── config.ts
+└── simulation/                  # Regras de domínio sem Phaser/DOM
+    ├── entities/
     ├── systems/
-    │   ├── buildings/         # Acessos, manutenção e estruturas implantáveis
-    │   ├── navigation/        # Pathfinding e navegação reutilizável
-    │   ├── CombatSystem
-    │   └── WaveSystem
-    ├── world/                 # GridMap, WorldConfig, loaders e pontos de entrada
-    └── Simulation.ts         # Fachada/orquestrador do domínio
+    ├── world/
+    └── Simulation.ts
 ```
-
-## Testes
-
-Os testes unitários ficam junto ao módulo que validam, com o sufixo `.test.ts`:
-- entidades em `simulation/entities/`;
-- sistemas em `simulation/systems/`, incluindo seus subdomínios;
-- componentes de mundo em `simulation/world/`.
-
-Testes de integração da orquestração permanecem junto a `Simulation.ts`. Fixtures compartilhadas só devem ser extraídas quando houver reutilização real.
 
 ## Regras de dependência
 
 1. `simulation/` não importa Phaser, DOM, `game/` ou APIs de interface.
 2. `game/` pode depender de `simulation/` e Phaser; nunca o inverso.
-3. `entities/` não deve depender da cena; sistemas recebem dependências explicitamente.
-4. `world/` mantém estruturas espaciais e dados de mapa; regras operacionais reutilizáveis ficam em `systems/`.
+3. `styles/` contém apenas apresentação web, sem regras de simulação.
+4. `game/presentation/` contém tokens visuais usados pelo renderer Phaser.
 5. Cenas orquestram sistemas e renderização; regras de domínio ficam fora delas.
-6. Evitar pastas genéricas como `misc`, `helpers` ou `utils` sem responsabilidade definida.
+6. Dados de cenário, assets e lógica de jogo não devem ser misturados.
 
 ## Convenções
 
 - PascalCase para classes e cenas; camelCase para funções e variáveis.
 - Sufixos explícitos: `System`, `Manager`, `Renderer`, `Scene` e `Config`.
-- Imports devem apontar para o módulo proprietário; não manter arquivos de reexportação apenas para compatibilidade depois da migração.
-- Dados de cenário não devem ser misturados com lógica de simulação.
+- Testes unitários ficam junto ao módulo que validam, com o sufixo `.test.ts`.

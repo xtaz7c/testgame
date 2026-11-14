@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import './home.css';
+import './styles/index.css';
 import { gameConfig } from './game/config';
 import { BUILD_LABEL } from './buildInfo';
 
