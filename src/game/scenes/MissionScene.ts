@@ -303,8 +303,9 @@ export class MissionScene extends Phaser.Scene {
     }
     this.lastPersistedDeployableState = this.serializeDeployableState();
     this.deployableGraphics = this.add.graphics().setDepth(95);
-    this.simulation.setExtractionZone({ x: 1280, y: 720, radius: 72 });
-    this.createPoliceSafeZone(1280, 720);
+    // A rua horizontal ocupa as linhas 36–39 do mapa (y=1152–1280); posiciona no centro.
+    this.simulation.setExtractionZone({ x: 1280, y: 1216, radius: 72 });
+    this.createPoliceSafeZone(1280, 1216);
     const spawnPoints: WaveSpawnPoint[] = [
       { id: 'west', x: -48, y: 640, entryTile: { column: 21, row: 18 } },
       { id: 'east', x: 2608, y: 720, entryTile: { column: 77, row: 22 } },
@@ -1120,7 +1121,7 @@ export class MissionScene extends Phaser.Scene {
     }
 
     // A van policial é o ponto fixo de extração (Safe Zone) no minimapa.
-    const safeZonePoint = toMinimap({ x: 1280, y: 720 });
+    const safeZonePoint = toMinimap({ x: 1280, y: 1216 });
     this.minimapGraphics.lineStyle(1.5, 0x55c878, 0.95);
     this.minimapGraphics.strokeCircle(safeZonePoint.x, safeZonePoint.y, 5);
     this.minimapGraphics.fillStyle(0x55c878, 1);
