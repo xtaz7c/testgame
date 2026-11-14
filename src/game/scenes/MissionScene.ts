@@ -512,8 +512,8 @@ export class MissionScene extends Phaser.Scene {
     this.hudBounds.minimap.x = mapX;
     this.hudBounds.minimap.y = mapY;
     this.hudBounds.team.x = mapX;
-    this.hudBounds.team.y = mapY + 364;
-    this.hudBounds.build.x = viewX + 20;
+    this.hudBounds.team.y = height / this.hudScale - 222;
+    this.hudBounds.build.x = (width / this.hudScale - 440) / 2;
     this.hudBounds.build.y = height / this.hudScale - 84;
 
     // Tactical HUD elements are viewport-space UI and must ignore world camera movement.
@@ -539,10 +539,16 @@ export class MissionScene extends Phaser.Scene {
     this.hudPanels.fillStyle(HUD_COLORS.infected, 1);
     this.hudPanels.fillCircle(mapX + 194, mapY + 338, 3);
     this.hudPanels.fillStyle(HUD_COLORS.panel, 0.99);
-    this.hudPanels.fillRoundedRect(mapX, mapY + 364, 320, 154, 8);
-    this.hudPanels.strokeRoundedRect(mapX, mapY + 364, 320, 154, 8);
-    this.hudPanels.fillRoundedRect(viewX + 20, height / this.hudScale - 84, 440, 64, 8);
-    this.hudPanels.strokeRoundedRect(viewX + 20, height / this.hudScale - 84, 440, 64, 8);
+    const teamY = height / this.hudScale - 222;
+    const buildX = (width / this.hudScale - 440) / 2;
+    this.hudPanels.fillRoundedRect(mapX, teamY, 320, 206, 8);
+    this.hudPanels.strokeRoundedRect(mapX, teamY, 320, 206, 8);
+    this.hudPanels.fillStyle(HUD_COLORS.red, 0.95);
+    this.hudPanels.fillRect(mapX, teamY, 3, 206);
+    this.hudPanels.fillRoundedRect(buildX, height / this.hudScale - 84, 440, 64, 8);
+    this.hudPanels.strokeRoundedRect(buildX, height / this.hudScale - 84, 440, 64, 8);
+    this.hudPanels.fillStyle(HUD_COLORS.red, 0.95);
+    this.hudPanels.fillRect(buildX + 12, height / this.hudScale - 84, 416, 2);
 
     this.settingsButton = this.add.text(viewX + 48, viewY + 48, '⚙', {
       fontFamily: 'Arial, sans-serif',
@@ -595,7 +601,7 @@ export class MissionScene extends Phaser.Scene {
       }).setScrollFactor(0).setDepth(1505));
     });
 
-    this.teamText = this.add.text(mapX + 12, mapY + 376, '', {
+    this.teamText = this.add.text(mapX + 12, teamY + 12, '', {
       fontFamily: 'Arial, sans-serif',
       fontSize: '10px',
       color: '#f4f1e9',
@@ -603,18 +609,18 @@ export class MissionScene extends Phaser.Scene {
       wordWrap: { width: 296 },
     }).setScrollFactor(0).setDepth(1505);
 
-    const buildTitle = this.add.text(viewX + 32, height / this.hudScale - 78, 'CONSTRUÇÕES  /  CLIQUE E POSICIONE NO MAPA', {
+    const buildTitle = this.add.text(buildX + 12, height / this.hudScale - 78, 'CONSTRUÇÕES  /  CLIQUE E POSICIONE NO MAPA', {
       fontFamily: 'Arial, sans-serif', fontSize: '9px', color: '#c0c5bd', letterSpacing: 0.8,
     }).setScrollFactor(0).setDepth(1505);
     hudLabels.push(buildTitle);
     this.buildButtons.splice(0, this.buildButtons.length,
-      this.createBuildButton(viewX + 76, height / this.hudScale - 47, 'ABRIGO 30/8', 'shelter-tent'),
-      this.createBuildButton(viewX + 184, height / this.hudScale - 47, 'SUPR. 20/5', 'resource-tent'),
-      this.createBuildButton(viewX + 292, height / this.hudScale - 47, 'SNIPER 45/20', 'sniper-post'),
-      this.createBuildButton(viewX + 400, height / this.hudScale - 47, 'BARREIRA 12/3', 'barricade'),
+      this.createBuildButton(buildX + 76, height / this.hudScale - 47, 'ABRIGO 30/8', 'shelter-tent'),
+      this.createBuildButton(buildX + 184, height / this.hudScale - 47, 'SUPR. 20/5', 'resource-tent'),
+      this.createBuildButton(buildX + 292, height / this.hudScale - 47, 'SNIPER 45/20', 'sniper-post'),
+      this.createBuildButton(buildX + 400, height / this.hudScale - 47, 'BARREIRA 12/3', 'barricade'),
     );
 
-    const teamHitArea = this.add.rectangle(mapX + 160, mapY + 441, 296, 142, 0xffffff, 0.001)
+    const teamHitArea = this.add.rectangle(mapX + 160, teamY + 103, 296, 190, 0xffffff, 0.001)
       .setScrollFactor(0).setDepth(1507)
       .setInteractive({ useHandCursor: true });
     teamHitArea.on('pointerdown', () => this.selectAllOfficers());

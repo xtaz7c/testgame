@@ -95,6 +95,38 @@
       <p class="controls-dialog__note">Comandos adicionais podem ser consultados durante a missão.</p>
     </dialog>
 
+
+    <dialog class="mode-dialog" id="mode-dialog" aria-labelledby="mode-title">
+      <div class="mode-dialog__header">
+        <div>
+          <p class="eyebrow">PROTOCOLO DE SOBREVIVÊNCIA · SETOR 07</p>
+          <h2 id="mode-title">SELECIONE A OPERAÇÃO</h2>
+          <p>Escolha como deseja iniciar sua jornada.</p>
+        </div>
+        <button class="dialog-close" id="close-modes" type="button" aria-label="Fechar modos">×</button>
+      </div>
+      <div class="mode-list">
+        <button class="mode-card" id="start-tutorial" type="button">
+          <span class="mode-card__index">01 / TREINAMENTO</span>
+          <strong>TUTORIAL</strong>
+          <span>Aprenda os comandos, coordene a equipe e resgate os sobreviventes.</span>
+          <b>INICIAR TUTORIAL ↗</b>
+        </button>
+        <button class="mode-card" id="start-campaign" type="button" disabled aria-disabled="true">
+          <span class="mode-card__index">02 / HISTÓRIA</span>
+          <strong>CAMPANHA</strong>
+          <span id="campaign-description">Conclua o tutorial para desbloquear a campanha.</span>
+          <b id="campaign-action">BLOQUEADO · CONCLUA O TUTORIAL</b>
+        </button>
+        <div class="mode-card mode-card--disabled" aria-disabled="true">
+          <span class="mode-card__index">03 / FUTURO</span>
+          <strong>EM BREVE</strong>
+          <span>Novos modos e operações serão disponibilizados futuramente.</span>
+          <b>INDISPONÍVEL</b>
+        </div>
+      </div>
+    </dialog>
+
     <div id="game-container" hidden></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
