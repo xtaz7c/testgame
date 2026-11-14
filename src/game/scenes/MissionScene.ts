@@ -136,7 +136,8 @@ export class MissionScene extends Phaser.Scene {
   private readonly hudBounds = {
     settings: { x: 20, y: 20, width: 124, height: 56 },
     mission: { x: 20, y: 88, width: 276, height: 184 },
-    minimap: { x: 0, y: 20, width: 220, height: 220 },
+    minimap: { x: 0, y: 20, width: 258, height: 242 },
+
     team: { x: 0, y: 0, width: 160, height: 112 },
     build: { x: 20, y: 0, width: 280, height: 112 },
   };
@@ -507,7 +508,7 @@ export class MissionScene extends Phaser.Scene {
     const height = this.scale.height;
     const logicalWidth = width / this.hudScale;
     const logicalHeight = height / this.hudScale;
-    const mapX = logicalWidth - 232;
+    const mapX = logicalWidth - 274;
     const mapY = 20;
     const buildX = (logicalWidth - 280) / 2;
     const buildY = logicalHeight - 132;
@@ -517,10 +518,12 @@ export class MissionScene extends Phaser.Scene {
     this.hudBounds.mission.x = 20;
     this.hudBounds.mission.y = 88;
     this.hudBounds.minimap.x = mapX;
+    this.hudBounds.minimap.width = 258;
+    this.hudBounds.minimap.height = 242;
     this.hudBounds.minimap.y = mapY;
     this.hudBounds.team.x = mapX;
-    this.hudBounds.team.y = mapY + 202;
-    this.hudBounds.team.width = 200;
+    this.hudBounds.team.y = mapY + 242;
+    this.hudBounds.team.width = 238;
     this.hudBounds.team.height = 160;
     this.hudBounds.build.x = buildX;
     this.hudBounds.build.y = buildY;
@@ -537,9 +540,9 @@ export class MissionScene extends Phaser.Scene {
     this.hudPanels.fillRoundedRect(20, 20, 124, 56, 8);
     this.hudPanels.strokeRoundedRect(20, 20, 124, 56, 8);
     this.hudPanels.fillStyle(0x000000, 1);
-    this.hudPanels.fillRoundedRect(mapX - 2, mapY - 2, 204, 204, 7);
+    this.hudPanels.fillRoundedRect(mapX - 2, mapY - 2, 242, 242, 7);
     this.hudPanels.fillStyle(0x000000, 1);
-    this.hudPanels.fillRoundedRect(mapX, mapY, 200, 200, 5);
+    this.hudPanels.fillRoundedRect(mapX, mapY, 238, 238, 5);
 
     this.settingsButton = this.add.text(48, 48, '⚙', {
       fontFamily: 'Arial, sans-serif', fontSize: '29px', color: '#e8e3d8',
@@ -575,11 +578,11 @@ export class MissionScene extends Phaser.Scene {
 
     // Minimap without heading or legend: its black frame is sufficient.
     this.minimapGraphics.fillStyle(0x080c0d, 1);
-    this.minimapGraphics.fillRect(mapX + 6, mapY + 6, 188, 188);
-    this.waveText = this.add.text(mapX + 100, mapY + 210, '', {
+    this.minimapGraphics.fillRect(mapX + 6, mapY + 6, 226, 226);
+    this.waveText = this.add.text(mapX + 119, mapY + 248, '', {
       fontFamily: 'Arial, sans-serif', fontSize: '10px', fontStyle: 'bold',
       color: '#f4f1e9', backgroundColor: '#101516', padding: { x: 8, y: 7 },
-      fixedWidth: 200, align: 'center',
+      fixedWidth: 238, align: 'center',
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1505);
 
     // One real second advances one in-game minute; this clock appears only in Campaign.
@@ -594,7 +597,7 @@ export class MissionScene extends Phaser.Scene {
       const label = this.add.text(0, -1, String(id), {
         fontFamily: 'Arial, sans-serif', fontSize: '10px', fontStyle: 'bold', color: '#ffffff',
       }).setOrigin(0.5);
-      const container = this.add.container(mapX + 55 + index * 46, mapY + 274, [graphics, label])
+      const container = this.add.container(mapX + 74 + index * 45, mapY + 314, [graphics, label])
         .setScrollFactor(0).setDepth(1506).setSize(36, 42).setInteractive({ useHandCursor: true });
       container.on('pointerdown', () => this.selectOfficer(id));
       this.officerStatusIcons.push({ container, graphics, label, id });
@@ -1005,8 +1008,8 @@ export class MissionScene extends Phaser.Scene {
     this.minimapGraphics.clear();
     const mapX = this.hudBounds.minimap.x + 6;
     const mapY = this.hudBounds.minimap.y + 6;
-    const mapWidth = 188;
-    const mapHeight = 188;
+    const mapWidth = 226;
+    const mapHeight = 226;
     const markerInset = 14;
     this.minimapGraphics.fillStyle(0x080c0d, 1);
     this.minimapGraphics.fillRoundedRect(mapX, mapY, mapWidth, mapHeight, 12);
