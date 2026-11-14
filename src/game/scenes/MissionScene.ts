@@ -1072,27 +1072,6 @@ export class MissionScene extends Phaser.Scene {
 
     keyboard.on('keydown-F', () => this.toggleFullscreen());
 
-    this.input.on(
-      'wheel',
-      (
-        _pointer: Phaser.Input.Pointer,
-        _currentlyOver: Phaser.GameObjects.GameObject[],
-        _deltaX: number,
-        deltaY: number,
-      ) => {
-        const camera = this.cameras.main;
-        const minimumZoom = Math.max(
-          MIN_CAMERA_ZOOM,
-          camera.width / this.cameraWorldWidth,
-          camera.height / this.cameraWorldHeight,
-        );
-        const nextZoom = camera.zoom * (deltaY > 0 ? 0.9 : 1.1);
-        camera.setZoom(Phaser.Math.Clamp(nextZoom, minimumZoom, MAX_CAMERA_ZOOM));
-        this.clampCamera();
-        // Refresh the minimap viewport immediately after wheel zoom.
-        this.updateHud();
-      },
-    );
   }
 
   private createSelectionControls(): void {
