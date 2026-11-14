@@ -303,14 +303,14 @@ export class MissionScene extends Phaser.Scene {
     }
     this.lastPersistedDeployableState = this.serializeDeployableState();
     this.deployableGraphics = this.add.graphics().setDepth(95);
-    // A rua horizontal ocupa as linhas 36–39 do mapa (y=1152–1280); posiciona no centro.
-    this.simulation.setExtractionZone({ x: 1280, y: 1216, radius: 72 });
-    this.createPoliceSafeZone(1280, 1216);
+    // A van fica no início da rua rural sem saída, abaixo da propriedade.
+    this.simulation.setExtractionZone({ x: 1936, y: 2032, radius: 72 });
+    this.createPoliceSafeZone(1936, 2032);
     const spawnPoints: WaveSpawnPoint[] = [
-      { id: 'west', x: -48, y: 640, entryTile: { column: 21, row: 18 } },
-      { id: 'east', x: 2608, y: 720, entryTile: { column: 77, row: 22 } },
-      { id: 'north', x: 1024, y: -48, entryTile: { column: 32, row: 9 } },
-      { id: 'south', x: 1280, y: 1488, entryTile: { column: 40, row: 43 } },
+      { id: 'west', x: -48, y: 1504, entryTile: { column: 8, row: 47 } },
+      { id: 'east', x: 3888, y: 1504, entryTile: { column: 111, row: 47 } },
+      { id: 'north', x: 1936, y: -48, entryTile: { column: 60, row: 8 } },
+      { id: 'south', x: 1936, y: 2928, entryTile: { column: 60, row: 82 } },
     ];
     const mission = getMissionDefinition(this.missionId);
     this.simulation.configureWaves(
