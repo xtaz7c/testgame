@@ -84,6 +84,7 @@ export class MissionScene extends Phaser.Scene {
   private debugInfectedSpawnIndex = 0;
   private selectedOfficerIds = new Set<number>();
   private worldGrid!: GridMap;
+  private worldMap!: Phaser.Tilemaps.Tilemap;
   private tileSize = 32;
   private cameraWorldWidth = 0;
   private cameraWorldHeight = 0;
@@ -217,6 +218,7 @@ export class MissionScene extends Phaser.Scene {
 
   private createWorld(): void {
     const map = this.make.tilemap({ key: 'mission-01' });
+    this.worldMap = map;
     const tileset = map.addTilesetImage('mission-tiles', 'mission-tiles');
 
     if (!tileset) {
@@ -302,8 +304,7 @@ export class MissionScene extends Phaser.Scene {
     this.lastPersistedDeployableState = this.serializeDeployableState();
     this.deployableGraphics = this.add.graphics().setDepth(95);
     this.simulation.setExtractionZone({ x: 1280, y: 720, radius: 72 });
-    this.add.circle(1280, 720, 72, 0x55c878, 0.08)
-      .setStrokeStyle(3, 0x55c878, 0.85).setDepth(70);
+    this.createPoliceSafeZone(1280, 720);
     const spawnPoints: WaveSpawnPoint[] = [
       { id: 'west', x: -48, y: 640, entryTile: { column: 21, row: 18 } },
       { id: 'east', x: 2608, y: 720, entryTile: { column: 77, row: 22 } },
@@ -322,7 +323,48 @@ export class MissionScene extends Phaser.Scene {
     this.cameras.main
       .setBounds(0, 0, this.cameraWorldWidth, this.cameraWorldHeight)
       .setZoom(1)
-      .centerOn(this.cameraWorldWidth / 2, this.cameraWorldHeight / 2);
+      // O foco inicial do Tutorial é a casa principal, não o centro geométrico do mapa.
+      .centerOn(1024, 608);
+  }
+
+  private createPoliceSafeZone(x: number, y: number): void {
+    const zone = this.add.graphics().setDepth(69);
+    zone.fillStyle(0x55c878, 0.08);
+    zone.fillCircle(x, y, 72);
+    zone.lineStyle(3, 0x55c878, 0.9);
+    zone.strokeCircle(x, y, 72);
+
+    // Van policial vista de cima: a área de extração fica centrada no veículo.
+    const van = this.add.graphics().setPosition(x, y).setDepth(72);
+    van.fillStyle(0x101516, 1);
+    van.fillRoundedRect(-35, -21, 70, 42, 6);
+    van.fillStyle(0xd8d8d0, 1);
+    van.fillRoundedRect(-31, -18, 62, 36, 4);
+    van.fillStyle(0x303a40, 1);
+    van.fillRoundedRect(13, -14, 13, 28, 2);
+    van.fillStyle(0x8fb6c4, 0.95);
+    van.fillRoundedRect(16, -11, 7, 22, 1);
+    van.fillStyle(0xc33a36, 1);
+    van.fillRect(-29, -5, 42, 5);
+    van.fillStyle(0x356fa7, 1);
+    van.fillRect(-29, 0, 42, 5);
+    van.fillStyle(0x161a1b, 1);
+    van.fillRoundedRect(-25, -24, 15, 5, 2);
+    van.fillRoundedRect(10, -24, 15, 5, 2);
+    van.fillRoundedRect(-25, 19, 15, 5, 2);
+    van.fillRoundedRect(10, 19, 15, 5, 2);
+    van.fillStyle(0xe8e3d8, 1);
+    van.fillRect(-31, -13, 3, 7);
+    van.fillRect(-31, 6, 3, 7);
+
+    this.add.text(x, y - 48, 'ZONA DE RESGATE', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '10px',
+      fontStyle: 'bold',
+      color: '#8ee0a5',
+      backgroundColor: '#101516',
+      padding: { x: 6, y: 4 },
+    }).setOrigin(0.5).setDepth(73);
   }
 
   private readStorage(key: string): string | null {
@@ -1010,15 +1052,44 @@ export class MissionScene extends Phaser.Scene {
     const mapY = this.hudBounds.minimap.y + 6;
     const mapWidth = 226;
     const mapHeight = 226;
-    const markerInset = 14;
+    const mapScale = Math.min(mapWidth / this.worldMap.width, mapHeight / this.worldMap.height);
+    const renderedMapWidth = this.worldMap.width * mapScale;
+    const renderedMapHeight = this.worldMap.height * mapScale;
+    const renderedMapX = mapX + (mapWidth - renderedMapWidth) / 2;
+    const renderedMapY = mapY + (mapHeight - renderedMapHeight) / 2;
+    const minimapTileColors = [
+      0x46583a, 0x414749, 0x796346, 0x77796f,
+      0x806849, 0x8a887d, 0x344b31, 0x555b58,
+      0x4b5b3b, 0x3d5036, 0x555a3d, 0x394b35,
+      0x3c4446, 0x484e4e, 0x4d5552, 0x625c4e,
+    ];
     this.minimapGraphics.fillStyle(0x080c0d, 1);
-    this.minimapGraphics.fillRoundedRect(mapX, mapY, mapWidth, mapHeight, 12);
-    this.minimapGraphics.lineStyle(2, 0x000000, 1);
-    this.minimapGraphics.strokeRect(mapX, mapY, mapWidth, mapHeight);
+    this.minimapGraphics.fillRect(mapX, mapY, mapWidth, mapHeight);
+
+    // Renderiza a geometria real do Tiled em escala, mantendo a proporção 80×45.
+    for (const layerName of ['Ground', 'Terrain', 'Structures']) {
+      const layer = this.worldMap.getLayer(layerName);
+      if (!layer) continue;
+      for (let row = 0; row < layer.data.length; row += 1) {
+        const tiles = layer.data[row] ?? [];
+        for (let column = 0; column < tiles.length; column += 1) {
+          const tile = tiles[column];
+          if (!tile || tile.index <= 0) continue;
+          const color = minimapTileColors[tile.index - 1] ?? 0x555b58;
+          this.minimapGraphics.fillStyle(color, 1);
+          this.minimapGraphics.fillRect(
+            renderedMapX + column * mapScale,
+            renderedMapY + row * mapScale,
+            mapScale + 0.15,
+            mapScale + 0.15,
+          );
+        }
+      }
+    }
 
     const toMinimap = (position: { x: number; y: number }) => ({
-      x: mapX + markerInset + Phaser.Math.Clamp(position.x / this.cameraWorldWidth, 0, 1) * (mapWidth - markerInset * 2),
-      y: mapY + markerInset + Phaser.Math.Clamp(position.y / this.cameraWorldHeight, 0, 1) * (mapHeight - markerInset * 2),
+      x: renderedMapX + Phaser.Math.Clamp(position.x / this.cameraWorldWidth, 0, 1) * renderedMapWidth,
+      y: renderedMapY + Phaser.Math.Clamp(position.y / this.cameraWorldHeight, 0, 1) * renderedMapHeight,
     });
 
     if (this.minimapVisibility.civilians) {
@@ -1048,18 +1119,24 @@ export class MissionScene extends Phaser.Scene {
       }
     }
 
+    // A van policial é o ponto fixo de extração (Safe Zone) no minimapa.
+    const safeZonePoint = toMinimap({ x: 1280, y: 720 });
+    this.minimapGraphics.lineStyle(1.5, 0x55c878, 0.95);
+    this.minimapGraphics.strokeCircle(safeZonePoint.x, safeZonePoint.y, 5);
+    this.minimapGraphics.fillStyle(0x55c878, 1);
+    this.minimapGraphics.fillCircle(safeZonePoint.x, safeZonePoint.y, 2);
+
     const camera = this.cameras.main;
-    const viewX = mapX + Phaser.Math.Clamp(camera.scrollX / this.cameraWorldWidth, 0, 1) * mapWidth;
-    const viewY = mapY + Phaser.Math.Clamp(camera.scrollY / this.cameraWorldHeight, 0, 1) * mapHeight;
-    const viewWidth = Phaser.Math.Clamp((camera.width / camera.zoom) / this.cameraWorldWidth * mapWidth, 2, mapWidth);
-    const viewHeight = Phaser.Math.Clamp((camera.height / camera.zoom) / this.cameraWorldHeight * mapHeight, 2, mapHeight);
-    this.minimapGraphics.lineStyle(1, HUD_COLORS.paper, 0.8);
-    this.minimapGraphics.strokeRoundedRect(
-      Phaser.Math.Clamp(viewX, mapX + markerInset, mapX + mapWidth - markerInset - viewWidth),
-      Phaser.Math.Clamp(viewY, mapY + markerInset, mapY + mapHeight - markerInset - viewHeight),
-      Math.min(viewWidth, mapWidth - markerInset * 2),
-      Math.min(viewHeight, mapHeight - markerInset * 2),
-      4,
+    const viewX = renderedMapX + Phaser.Math.Clamp(camera.scrollX / this.cameraWorldWidth, 0, 1) * renderedMapWidth;
+    const viewY = renderedMapY + Phaser.Math.Clamp(camera.scrollY / this.cameraWorldHeight, 0, 1) * renderedMapHeight;
+    const viewWidth = Phaser.Math.Clamp((camera.width / camera.zoom) / this.cameraWorldWidth * renderedMapWidth, 2, renderedMapWidth);
+    const viewHeight = Phaser.Math.Clamp((camera.height / camera.zoom) / this.cameraWorldHeight * renderedMapHeight, 2, renderedMapHeight);
+    this.minimapGraphics.lineStyle(1, HUD_COLORS.paper, 0.9);
+    this.minimapGraphics.strokeRect(
+      Phaser.Math.Clamp(viewX, renderedMapX, renderedMapX + renderedMapWidth - viewWidth),
+      Phaser.Math.Clamp(viewY, renderedMapY, renderedMapY + renderedMapHeight - viewHeight),
+      viewWidth,
+      viewHeight,
     );
 
     this.settingsButton.setColor(this.pauseMenuOpen ? '#c33a36' : '#e8e3d8');
