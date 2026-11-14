@@ -233,6 +233,7 @@ export class MissionScene extends Phaser.Scene {
     }
 
     this.tileSize = map.tileWidth;
+    this.createRuralUtilityLines();
     this.worldGrid = buildGridFromTiledLayers(
       map.width,
       map.height,
@@ -366,6 +367,19 @@ export class MissionScene extends Phaser.Scene {
       backgroundColor: '#101516',
       padding: { x: 6, y: 4 },
     }).setOrigin(0.5).setDepth(73);
+  }
+
+  private createRuralUtilityLines(): void {
+    const graphics = this.add.graphics().setDepth(88);
+    const poleY = 56 * 32 + 16;
+    const westPoleX = 52 * 32 + 16;
+    const eastPoleX = 68 * 32 + 16;
+    graphics.lineStyle(2, 0x292b27, 0.95);
+    graphics.lineBetween(westPoleX, poleY - 52, eastPoleX, poleY - 52);
+    graphics.lineStyle(4, 0x5a4935, 1);
+    [westPoleX, eastPoleX].forEach((x) => graphics.lineBetween(x, poleY - 34, x, poleY + 30));
+    graphics.lineStyle(2, 0x92734a, 1);
+    [westPoleX, eastPoleX].forEach((x) => graphics.lineBetween(x - 8, poleY - 34, x + 8, poleY - 34));
   }
 
   private readStorage(key: string): string | null {
@@ -1021,7 +1035,7 @@ export class MissionScene extends Phaser.Scene {
       `AMEAÇAS ATIVAS  ${state.infectedCount}`,
     ].join('\n'));
 
-    const elapsedCampaignMinutes = 8 * 60 + Math.floor(state.elapsed);
+    const elapsedCampaignMinutes = 17 * 60 + Math.floor(state.elapsed);
     const campaignDay = Math.floor(elapsedCampaignMinutes / (24 * 60)) + 1;
     const minuteOfDay = elapsedCampaignMinutes % (24 * 60);
     const campaignHour = String(Math.floor(minuteOfDay / 60)).padStart(2, '0');
